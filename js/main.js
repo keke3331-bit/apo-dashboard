@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+const GEMINI_API_KEY = ''; // ← ここにGemini APIキーを貼り付ける
+
 const firebaseConfig = {
   apiKey: "AIzaSyCVpNsLGXG3jiXA-qJOA7srTwyvsvJAA7s",
   authDomain: "apo-dashboard.firebaseapp.com",
@@ -175,6 +177,104 @@ function initDashboard() {
   });
 }
 
+/* ─── Gemini 画像解析 ─── */
+async function analyzeImageWithGemini(base64, mimeType) {
+  const prompt = `あなたは手書き集計表を読み取るOCRシステムです。
+この画像は営業担当者の日次活動記録（手書き）です。
+以下の5項目の数値を読み取り、JSONのみで返してください。
+該当が見当たらない項目は0にしてください。
+正の字・タリーマークも数値に変換してください。
+
+{
+  "call_phone": 架電数（電話）の数値,
+  "call_line": LINEコンタクト数の数値,
+  "talk": 通話数の数値,
+  "appo": アポイント数の数値,
+  "asset": 見込みasset数の数値
+}`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [
+          { text: prompt },
+          { inline_data: { mime_type: mimeType, data: base64 } }
+        ]}]
+      })
+    }
+  );
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  const data = await res.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const match = text.match(/\{[\s\S]*?\}/);
+  if (!match) throw new Error('JSONが取得できませんでした');
+  return JSON.parse(match[0]);
+}
+
+function initCamera() {
+  const btn      = document.getElementById('btn-camera');
+  const fileInput = document.getElementById('camera-input');
+  const preview  = document.getElementById('camera-preview');
+  const previewImg = document.getElementById('preview-img');
+  const status   = document.getElementById('ai-status');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    if (!GEMINI_API_KEY) {
+      showToast('⚠️ main.js に GEMINI_API_KEY を設定してください');
+      return;
+    }
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // プレビュー表示
+    const objectUrl = URL.createObjectURL(file);
+    previewImg.src = objectUrl;
+    preview.style.display = 'block';
+    status.textContent = '🤖 AI解析中…';
+    status.className = 'ai-status loading';
+
+    try {
+      // Base64変換
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = e => resolve(e.target.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const result = await analyzeImageWithGemini(base64, file.type);
+
+      // フォームに反映
+      const fields = { call_phone: result.call_phone, call_line: result.call_line,
+                       talk: result.talk, appo: result.appo, asset: result.asset };
+      Object.entries(fields).forEach(([key, val]) => {
+        const el = document.getElementById(key);
+        if (el) el.value = Number(val) || 0;
+      });
+
+      // バリデーション実行
+      const cp = Number(result.call_phone)||0, cl = Number(result.call_line)||0;
+      const tk = Number(result.talk)||0,       ap = Number(result.appo)||0;
+      showError(validateInputs(cp, cl, tk, ap));
+
+      status.textContent = '✅ 読み取り完了！内容を確認して保存してください';
+      status.className = 'ai-status success';
+    } catch (err) {
+      status.textContent = `⚠️ 読み取り失敗：${err.message}`;
+      status.className = 'ai-status error';
+    }
+    fileInput.value = '';
+  });
+}
+
 /* ─── Input page ─── */
 async function loadEntryToForm(date, staff) {
   const snap  = await get(ref(db, `apo_data/${date}/${staff}`));
@@ -313,4 +413,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initHamburger();
   initDashboard();
   initInput();
+  initCamera();
 });
