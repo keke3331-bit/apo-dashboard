@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="担当者別アポイント集計ダッシュボード。架電数・通話数・アポ数・見込みassetを期間別にグラフで確認できます。">
+  <title>ダッシュボード | アポ集計</title>
+  <meta property="og:title" content="アポ集計ダッシュボード">
+  <meta property="og:description" content="担当者別アポイント集計ダッシュボード">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <link rel="canonical" href="index.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header__logo">📊 アポ集計</div>
+  <nav class="header__nav">
+    <a href="index.html" class="active">ダッシュボード</a>
+    <a href="pages/input.html">データ入力</a>
+  </nav>
+  <button class="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main class="main">
+
+  <!-- 期間切り替えバー -->
+  <div class="period-bar">
+    <label for="period-select">表示期間</label>
+    <select id="period-select">
+      <option value="daily">日別</option>
+      <option value="weekly">週別</option>
+      <option value="monthly">月別</option>
+    </select>
+    <label for="date-input">日付</label>
+    <input type="date" id="date-input">
+    <button class="btn-nav" id="btn-prev">← 前へ</button>
+    <button class="btn-nav" id="btn-next">次へ →</button>
+    <span id="period-label" style="font-size:13px;color:var(--text-light);margin-left:auto"></span>
+    <button class="btn-nav" id="btn-refresh">🔄 更新</button>
+  </div>
+
+  <!-- サマリーカード -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-card__label">架電数（電話）</div>
+      <div class="summary-card__value phone" id="sum-call_phone">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__label">架電数（LINE）</div>
+      <div class="summary-card__value line" id="sum-call_line">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__label">通話数</div>
+      <div class="summary-card__value talk" id="sum-talk">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__label">アポイント数</div>
+      <div class="summary-card__value appo" id="sum-appo">0</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card__label">見込みasset数</div>
+      <div class="summary-card__value asset" id="sum-asset">0</div>
+    </div>
+  </div>
+
+  <!-- グラフ -->
+  <div class="card chart-section">
+    <h2 class="section-title">担当者別グラフ</h2>
+    <div class="tabs">
+      <button class="tab-btn active" data-metric="call_phone">架電（電話）</button>
+      <button class="tab-btn" data-metric="call_line">架電（LINE）</button>
+      <button class="tab-btn" data-metric="talk">通話数</button>
+      <button class="tab-btn" data-metric="appo">アポ数</button>
+      <button class="tab-btn" data-metric="asset">見込みasset</button>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="chart-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- テーブル -->
+  <div class="card">
+    <h2 class="section-title">担当者別一覧</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>担当者</th>
+            <th>架電（電話）</th>
+            <th>架電（LINE）</th>
+            <th>通話数</th>
+            <th>アポ数</th>
+            <th>見込みasset</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+        <tfoot id="table-foot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<a href="pages/input.html" class="fab">＋ データを入力する</a>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

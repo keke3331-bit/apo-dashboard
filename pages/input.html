@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="担当者毎のアポイント実績（架電数・通話数・アポ数・見込みasset）を入力します。">
+  <title>データ入力 | アポ集計</title>
+  <meta property="og:title" content="データ入力 | アポ集計">
+  <meta property="og:description" content="アポイント実績データの入力フォーム">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <link rel="canonical" href="input.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="header__logo">📊 アポ集計</div>
+  <nav class="header__nav">
+    <a href="../index.html">ダッシュボード</a>
+    <a href="input.html" class="active">データ入力</a>
+  </nav>
+  <button class="hamburger" aria-label="メニュー">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main class="main">
+  <div class="form-container">
+
+    <div class="form-card">
+      <h1 class="form-title">データ入力</h1>
+      <div class="edit-banner" id="edit-banner">
+        ✏️ <span id="edit-banner-text"></span>のデータを編集中
+      </div>
+      <form id="input-form" novalidate>
+
+        <div class="form-group">
+          <label for="staff-select">担当者</label>
+          <select id="staff-select" required>
+            <option value="">担当者を選択してください</option>
+            <option value="井戸">井戸</option>
+            <option value="関根">関根</option>
+            <option value="柴">柴</option>
+            <option value="片桐">片桐</option>
+            <option value="入江">入江</option>
+            <option value="金">金</option>
+            <option value="玉井">玉井</option>
+            <option value="新田">新田</option>
+            <option value="菊池">菊池</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date-input">日付</label>
+          <input type="date" id="date-input" required>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="form-group">
+            <label for="call_phone">架電数（電話）</label>
+            <input type="number" id="call_phone" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="call_line">架電数（LINE）</label>
+            <input type="number" id="call_line" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="talk">通話数</label>
+            <input type="number" id="talk" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="appo">アポイント数</label>
+            <input type="number" id="appo" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label for="asset">見込みasset数</label>
+            <input type="number" id="asset" min="0" placeholder="0">
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">保存する</button>
+          <button type="button" id="btn-clear" class="btn btn-secondary">クリア</button>
+        </div>
+
+      </form>
+
+      <a href="../index.html" class="back-link">← ダッシュボードへ戻る</a>
+    </div>
+
+    <!-- 入力履歴 -->
+    <div class="history-section">
+      <h2 class="section-title">直近の入力履歴（5件）</h2>
+      <div class="card table-wrap" style="padding:0">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left">日付</th>
+              <th style="text-align:left">担当者</th>
+              <th>架電（電話）</th>
+              <th>架電（LINE）</th>
+              <th>通話</th>
+              <th>アポ</th>
+              <th>asset</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast"></div>
+<script type="module" src="../js/main.js"></script>
+</body>
+</html>
