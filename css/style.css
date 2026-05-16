@@ -156,6 +156,7 @@ a:hover { text-decoration: underline; }
 .summary-card.line::before   { background: var(--accent-purple); }
 .summary-card.talk::before   { background: var(--accent-cyan); }
 .summary-card.appo::before   { background: var(--accent-green); }
+.summary-card.family::before { background: #EC4899; }
 .summary-card.asset::before  { background: var(--accent-orange); }
 
 .summary-card__label { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; letter-spacing: 0.02em; }
