@@ -17,7 +17,7 @@ const db  = getDatabase(app);
 const STAFF = ['井戸', '関根', '柴', '片桐', '入江', '金', '玉井', '新田', '菊池'];
 const METRICS = [
   { key: 'call_phone', label: '架電(電話)', color: '#2563EB' },
-  { key: 'call_line',  label: '架電(LINE)', color: '#7C3AED' },
+  { key: 'call_line',  label: 'LINEコンタクト数', color: '#7C3AED' },
   { key: 'talk',       label: '通話数',     color: '#0891B2' },
   { key: 'appo',       label: 'アポ数',     color: '#10B981' },
   { key: 'asset',      label: '見込みasset', color: '#F59E0B' },
