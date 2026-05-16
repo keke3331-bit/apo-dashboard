@@ -200,6 +200,23 @@ async function checkAndFill() {
   setEditMode(found, `${staff}（${date}）`);
 }
 
+function showError(messages) {
+  const banner = document.getElementById('error-banner');
+  if (!banner) return;
+  if (!messages.length) { banner.classList.remove('show'); banner.innerHTML = ''; return; }
+  banner.innerHTML = messages.map(m => `<p>${m}</p>`).join('');
+  banner.classList.add('show');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function validateInputs(callPhone, callLine, talk, appo) {
+  const errors = [];
+  const totalCall = callPhone + callLine;
+  if (talk > totalCall) errors.push('架電数よりも通話数が多くなっています');
+  if (appo > talk)      errors.push('通話数よりもアポイント数が多くなっています');
+  return errors;
+}
+
 function initInput() {
   const form = document.getElementById('input-form');
   if (!form) return;
@@ -210,11 +227,29 @@ function initInput() {
   document.getElementById('staff-select').addEventListener('change', checkAndFill);
   document.getElementById('date-input').addEventListener('change',   checkAndFill);
 
+  // リアルタイムバリデーション
+  ['call_phone','call_line','talk','appo'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      const cp   = Number(document.getElementById('call_phone').value) || 0;
+      const cl   = Number(document.getElementById('call_line').value)  || 0;
+      const talk = Number(document.getElementById('talk').value)       || 0;
+      const appo = Number(document.getElementById('appo').value)       || 0;
+      showError(validateInputs(cp, cl, talk, appo));
+    });
+  });
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const staff   = document.getElementById('staff-select').value;
     const date    = document.getElementById('date-input').value;
     if (!staff || !date) { showToast('担当者と日付を選択してください'); return; }
+
+    const cp   = Number(document.getElementById('call_phone').value) || 0;
+    const cl   = Number(document.getElementById('call_line').value)  || 0;
+    const talk = Number(document.getElementById('talk').value)       || 0;
+    const appo = Number(document.getElementById('appo').value)       || 0;
+    const errors = validateInputs(cp, cl, talk, appo);
+    if (errors.length) { showError(errors); return; }
 
     const saveBtn = form.querySelector('button[type="submit"]');
     saveBtn.textContent = '保存中…'; saveBtn.disabled = true;
@@ -227,6 +262,7 @@ function initInput() {
         asset:      Number(document.getElementById('asset').value)      || 0,
       });
       showToast('✅ 保存しました');
+      showError([]);
       setEditMode(true, `${staff}（${date}）`);
       renderHistory();
     } catch { showToast('⚠️ 保存に失敗しました'); }
@@ -236,6 +272,7 @@ function initInput() {
   document.getElementById('btn-clear').addEventListener('click', () => {
     METRICS.forEach(({key}) => { const el = document.getElementById(key); if (el) el.value = ''; });
     setEditMode(false);
+    showError([]);
   });
 }
 

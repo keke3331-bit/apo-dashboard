@@ -279,6 +279,23 @@ tfoot td { font-weight: 700; border-top: 2px solid var(--primary); }
 .history-section { margin-top: 28px; }
 .history-section .section-title { font-size: 14px; }
 
+/* ─── ERROR BANNER ─── */
+.error-banner {
+  display: none;
+  background: #FEF2F2;
+  border: 1px solid #EF4444;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #B91C1C;
+  margin-bottom: 18px;
+  flex-direction: column;
+  gap: 4px;
+}
+.error-banner.show { display: flex; }
+.error-banner p { margin: 0; }
+.error-banner p::before { content: "⚠️ "; }
+
 /* ─── EDIT BANNER ─── */
 .edit-banner {
   display: none;
