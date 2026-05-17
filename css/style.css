@@ -270,7 +270,7 @@ tfoot td { font-weight: 700; color: var(--text); background: #FAF9F6; }
 .back-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; color: var(--text-muted); font-size: 12px; }
 .back-link:hover { color: var(--text); text-decoration: none; }
 
-.history-section { margin-top: 24px; }
+.history-section { margin-top: 24px; max-width: 900px; margin-left: auto; margin-right: auto; }
 
 /* ─── CAMERA ─── */
 .camera-section { margin-bottom: 16px; }

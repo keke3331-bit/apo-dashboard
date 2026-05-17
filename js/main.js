@@ -16,7 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-const STAFF = ['井戸', '関根', '柴', '片桐', '入江', '金', '玉井', '新田', '菊池', '渡辺'];
+const STAFF = ['井戸', '関根', '柴', '片桐', '入江', '金', '玉井', '新田', '菊池', '渡辺', '濱田'];
 const METRICS = [
   { key: 'call_phone', label: '架電(電話)', color: '#2563EB' },
   { key: 'call_line',  label: 'LINEコンタクト数', color: '#7C3AED' },
