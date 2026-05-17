@@ -150,7 +150,7 @@ function initDashboard() {
     const tfoot = document.getElementById('table-foot');
     if (!tbody) return;
     tbody.innerHTML = '';
-    const totals = {call_phone:0, call_line:0, talk:0, appo:0, asset:0};
+    const totals = {call_phone:0, call_line:0, talk:0, appo:0, family:0, asset:0};
     STAFF.forEach(name => {
       const row = document.createElement('tr');
       row.innerHTML = `<td>${name}</td>` +
