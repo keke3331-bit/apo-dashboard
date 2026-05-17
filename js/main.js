@@ -27,7 +27,12 @@ const METRICS = [
 ];
 
 /* ─── Date helpers ─── */
-function toISO(date) { return date.toISOString().slice(0, 10); }
+function toISO(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
 function parseISO(str) { const [y,m,d] = str.split('-').map(Number); return new Date(y, m-1, d); }
 function getWeekStart(date) { const d = new Date(date); d.setDate(d.getDate() - d.getDay()); return d; }
 function getWeekDates(ws) {
@@ -42,7 +47,7 @@ function getMonthDates(y, m) {
 /* ─── Aggregate ─── */
 function aggregate(allData, dates) {
   const result = {};
-  STAFF.forEach(n => { result[n] = {call_phone:0, call_line:0, talk:0, appo:0, asset:0}; });
+  STAFF.forEach(n => { result[n] = {call_phone:0, call_line:0, talk:0, appo:0, family:0, asset:0}; });
   if (!allData) return result;
   dates.forEach(dateStr => {
     const day = allData[dateStr];
