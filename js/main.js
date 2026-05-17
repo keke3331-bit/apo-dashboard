@@ -319,7 +319,7 @@ function validateInputs(callPhone, callLine, talk, appo) {
   const errors = [];
   const totalCall = callPhone + callLine;
   if (talk > totalCall) errors.push('架電数よりも通話数が多くなっています');
-  if (appo > talk)      errors.push('通話数よりもアポイント数が多くなっています');
+  if (appo > totalCall) errors.push('アポイント数が架電数とLINEコンタクト数の合計を上回っています');
   return errors;
 }
 
@@ -357,6 +357,17 @@ function initInput() {
     const errors = validateInputs(cp, cl, talk, appo);
     if (errors.length) { showError(errors); return; }
 
+    // 既存データが0以外なら上書き確認
+    const existingSnap = await get(ref(db, `apo_data/${date}/${staff}`));
+    if (existingSnap.exists()) {
+      const existing = existingSnap.val();
+      const hasNonZero = METRICS.some(({key}) => Number(existing[key] || 0) > 0);
+      if (hasNonZero) {
+        const ok = confirm(`${staff}（${date}）のデータがすでに入力されています。上書きしますか？`);
+        if (!ok) return;
+      }
+    }
+
     const saveBtn = form.querySelector('button[type="submit"]');
     saveBtn.textContent = '保存中…'; saveBtn.disabled = true;
     try {
@@ -365,6 +376,7 @@ function initInput() {
         call_line:  Number(document.getElementById('call_line').value)  || 0,
         talk:       Number(document.getElementById('talk').value)       || 0,
         appo:       Number(document.getElementById('appo').value)       || 0,
+        family:     Number(document.getElementById('family').value)     || 0,
         asset:      Number(document.getElementById('asset').value)      || 0,
       });
       showToast('✅ 保存しました');
