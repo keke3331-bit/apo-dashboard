@@ -81,7 +81,7 @@ a:hover { text-decoration: underline; }
 .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
 /* ─── MAIN ─── */
-.main { max-width: 1160px; margin: 0 auto; padding: 24px 20px; }
+.main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 100px; }
 
 /* ─── CARD ─── */
 .card {

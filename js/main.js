@@ -154,12 +154,12 @@ function initDashboard() {
     STAFF.forEach(name => {
       const row = document.createElement('tr');
       row.innerHTML = `<td>${name}</td>` +
-        METRICS.map(({key}) => { totals[key]+=agg[name][key]; return `<td>${agg[name][key]||0}</td>`; }).join('');
+        METRICS.map(({key}) => { totals[key] += Number(agg[name][key] || 0); return `<td>${agg[name][key]||0}</td>`; }).join('');
       tbody.appendChild(row);
     });
     if (tfoot) {
       tfoot.innerHTML = `<tr><td>合計</td>` +
-        METRICS.map(({key}) => `<td><strong>${totals[key]}</strong></td>`).join('') + `</tr>`;
+        METRICS.map(({key}) => `<td><strong>${totals[key] || 0}</strong></td>`).join('') + `</tr>`;
     }
   }
 
